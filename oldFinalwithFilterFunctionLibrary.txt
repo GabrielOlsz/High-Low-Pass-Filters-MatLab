@@ -1,0 +1,68 @@
+%Names: Gabriel Olszewski and Anthony Mauro
+%Signals and Systems 3302-01
+%Final Project - High/Low/BandPass/BandStop Filters on Audio
+
+%% 
+close all;
+clear all;
+clc;
+%% 
+
+[y,Fs] = audioread('CannonFire.mp3');
+%[y,Fs] = audioread('FrogSound.mp3'); %Uncomment line to use a  
+                                      %frog sound instead
+%% 
+
+sound(y,Fs); %plays original sound
+
+%% 
+
+hpass = 1500;
+hpf = highpass(y,hpass, Fs); %High-Pass Filter
+sound(hpf,Fs)
+%% 
+
+lpass = 1500;
+lpf = lowpass(y,lpass,Fs); %Low-Pass Filter
+sound(lpf,Fs)
+%% 
+
+bandpassw = [5000 20000];
+bpf = bandpass(y, bandpassw,Fs); %Band-Pass Filter
+sound(bpf,Fs)
+%% 
+
+%bandstopw = [1 2000];
+bandstopw = [1 10000];
+bsf = bandstop(y, bandstopw,Fs); %Band-Stop/Band-Reject Filter
+sound(bsf,Fs)
+%% 
+
+[data, Fs] = audioread('CannonFire.mp3'); %Load Sound
+%[data, Fs] = audioread('FrogSound.mp3');
+p = 0:(5/237935):5; %Make vector for 5 seconds
+t = p';
+
+%% 
+%Low Pass Filter
+
+g = tf(1, [200 1]);
+   
+lp = lsim(g, data(:,1)*10000, t);
+lp2 = lsim(g, data(:,2)*10000,t);
+
+%sound(lp+lp2,Fs)
+
+bode(g)
+
+%%
+%High Pass Filter
+g = tf([1 0], [1/200 1]);
+
+hp = lsim(g, data(:,1)*10000, t);
+hp2 = lsim(g, data(:,2)*10000,t);
+
+sound(hp+hp2,Fs)
+
+bode(g)
+
